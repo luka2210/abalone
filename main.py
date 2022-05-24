@@ -36,8 +36,6 @@ def create_model(hidden_layers, output_layer='linear'):
         ))
 
     if output_layer == 'softmax':
-        loss = 'sparse_categorical_crossentropy'
-        metrics = ['accuracy']
         model.add(tf.keras.layers.Dense(
             30,
             activation='leaky_relu',
@@ -45,22 +43,23 @@ def create_model(hidden_layers, output_layer='linear'):
             bias_initializer='glorot_uniform'
         ))
         model.add(tf.keras.layers.Softmax(-1))
+        loss = 'sparse_categorical_crossentropy'
+        metrics = ['accuracy']
     else:
-        loss = "mean_squared_error"
-        metrics = ['mean_absolute_error']
         model.add(tf.keras.layers.Dense(
             1,
             activation='linear',
             kernel_initializer='glorot_uniform',
             bias_initializer='glorot_uniform'
         ))
+        loss = "mean_squared_error"
+        metrics = ['mean_absolute_error']
 
     model.compile(
         optimizer='adam',
         loss=loss,
         metrics=metrics
     )
-
     return model
 
 
@@ -73,7 +72,7 @@ def main():
     softmax_model.evaluate(X_test, Y_test)
 
     linear_model = create_model([32, 16, 16, 8, 8, 4], 'linear')
-    linear_model.fit(X_train, Y_train, epochs=600, batch_size=256)
+    linear_model.fit(X_train, Y_train, epochs=1200, batch_size=1024)
     linear_model.evaluate(X_test, Y_test)
 
 
